@@ -1,0 +1,7 @@
+git remote remove origin 2>/dev/null || true
+git remote add origin https://github.com/gabiirad-create/Fam-lia-.git
+git remote -v
+git add .
+git commit -m "chore: upload project files" || true
+git branch -M main
+git push -u origin main
