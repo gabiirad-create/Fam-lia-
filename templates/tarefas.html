@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tarefas</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="card">
+        <h1>Olá, {{ usuario }}</h1>
+
+        <form method="post">
+            <input type="text" name="tarefa" placeholder="Nome da tarefa" required>
+            <input type="time" name="horario">
+            <button type="submit">Adicionar</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Suas tarefas</h2>
+
+        <ul>
+            {% for tarefa in tarefas %}
+                <li>
+                    {% if tarefa[3] == 1 %}
+                        <s>{{ tarefa[2] }} - {{ tarefa[1] }}</s>
+                    {% else %}
+                        {{ tarefa[2] }} - {{ tarefa[1] }}
+                        <a href="/concluir/{{ tarefa[0] }}">Concluir</a>
+                    {% endif %}
+
+                    | <a href="/excluir/{{ tarefa[0] }}">Excluir</a>
+                </li>
+            {% endfor %}
+        </ul>
+<br><br>
+<a href="/medicacao">Ver medicação</a>
+
+        <br>
+        <a href="/logout">Sair</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="card">
+        <h1>Entrar</h1>
+
+        <form method="post">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+
+        {% if erro %}
+        <p>{{ erro }}</p>
+        {% endif %}
+
+        <p>Usuários: Gabi, Leonardo, Mayumi, Akira e Kenji</p>
+        <p>Senha inicial: 1234</p>
+    </div>
+</body>
+</html>
