@@ -1,42 +1,79 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tarefas</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-    <div class="card">
-        <h1>Olá, {{ usuario }}</h1>
+{% extends "base.html" %}
+{% block title %}Tarefas{% endblock %}
+{% block content %}
+<section class="card destaque">
+    <h2>Minhas tarefas de hoje</h2>
+    <p class="pontos">Sua pontuação total: <strong>{{ pontos_usuario }}</strong> pontos</p>
 
-        <form method="post">
-            <input type="text" name="tarefa" placeholder="Nome da tarefa" required>
-            <input type="time" name="horario">
-            <button type="submit">Adicionar</button>
-        </form>
-    </div>
+    <form method="post" class="grid-2">
+        <input type="text" name="tarefa" placeholder="Nome da tarefa" required>
+        <input type="time" name="horario">
 
-    <div class="card">
-        <h2>Suas tarefas</h2>
+        <select name="recorrencia" class="full" required>
+            <option value="todos_os_dias">Todos os dias</option>
+            <option value="segunda_a_sexta">Segunda a sexta</option>
+            <option value="dias_escolhidos">Apenas dias escolhidos</option>
+        </select>
 
-        <ul>
-            {% for tarefa in tarefas %}
-                <li>
-                    {% if tarefa[3] == 1 %}
-                        <s>{{ tarefa[2] }} - {{ tarefa[1] }}</s>
-                    {% else %}
-                        {{ tarefa[2] }} - {{ tarefa[1] }}
-                        <a href="/concluir/{{ tarefa[0] }}">Concluir</a>
-                    {% endif %}
+        <div class="full dias-box">
+            <span>Dias da semana (quando escolher dias específicos):</span>
+            <div class="dias-grid">
+                {% for dia in dias_semana %}
+                <label><input type="checkbox" name="dias_semana" value="{{ dia }}"> {{ dia }}</label>
+                {% endfor %}
+            </div>
+        </div>
 
-                    | <a href="/excluir/{{ tarefa[0] }}">Excluir</a>
-                </li>
-            {% endfor %}
-        </ul>
-<br><br>
-<a href="/medicacao">Ver medicação</a>
+        <input type="number" name="pontos" min="0" value="1" required placeholder="Pontos da tarefa">
+        <button class="full" type="submit">Adicionar tarefa</button>
+    </form>
+</section>
 
-        <br>
-        <a href="/logout">Sair</a>
-    </div>
-</body>
-</html>
+<section class="card">
+    <h3>Tarefas agendadas para hoje</h3>
+    <ul class="listagem">
+        {% for tarefa in tarefas %}
+        <li>
+            <div>
+                {% if tarefa_concluida_hoje(tarefa, hoje_iso) %}
+                <s>{{ tarefa['horario'] or '--:--' }} - {{ tarefa['nome'] }}</s>
+                {% else %}
+                {{ tarefa['horario'] or '--:--' }} - {{ tarefa['nome'] }}
+                {% endif %}
+                <p class="meta">{{ formatar_recorrencia(tarefa['recorrencia'], tarefa['dias_semana']) }} • {{ tarefa['pontos'] }} pts</p>
+            </div>
+            <div class="acoes">
+                {% if not tarefa_concluida_hoje(tarefa, hoje_iso) %}
+                <form action="/concluir/{{ tarefa['id'] }}" method="post">
+                    <button type="submit" class="ok">Concluir hoje</button>
+                </form>
+                {% endif %}
+                <form action="/excluir/{{ tarefa['id'] }}" method="post">
+                    <button type="submit" class="danger">Excluir</button>
+                </form>
+            </div>
+        </li>
+        {% else %}
+        <li>Nenhuma tarefa para hoje.</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="card">
+    <h3>Pontuação total da família</h3>
+    <ul class="listagem compacta">
+        {% for pessoa in pontuacao_total %}
+        <li>{{ pessoa['nome'] }}: <strong>{{ pessoa['pontuacao'] }}</strong> pontos</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="card">
+    <h3>Ranking das crianças</h3>
+    <ol class="ranking">
+        {% for crianca in ranking_criancas %}
+        <li>{{ crianca['nome'] }} - {{ crianca['pontuacao'] }} pts</li>
+        {% endfor %}
+    </ol>
+</section>
+{% endblock %}

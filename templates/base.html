@@ -1,0 +1,44 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aplicativo da Família{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+    <meta name="theme-color" content="#7c5cff">
+</head>
+<body>
+    <div class="app-shell">
+        <nav class="topbar">
+            <div>
+                <h1>Aplicativo da Família</h1>
+                {% if usuario_logado %}
+                <p>Olá, {{ usuario_logado }}</p>
+                {% endif %}
+            </div>
+
+            {% if usuario_logado %}
+            <div class="menu">
+                <a href="{{ url_for('tarefas') }}">Tarefas</a>
+                <a href="{{ url_for('medicacao') }}">Medicação</a>
+                <a href="{{ url_for('recompensas') }}">Recompensas</a>
+                {% if eh_admin %}
+                <a href="{{ url_for('painel_gabi') }}">Painel da Gabi</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}">Sair</a>
+            </div>
+            {% endif %}
+        </nav>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
+```

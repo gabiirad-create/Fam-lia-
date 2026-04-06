@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Recompensas{% endblock %}
+{% block content %}
+<section class="card destaque infantil">
+    <h2>🎁 Recompensas</h2>
+    <p class="pontos">Pontos restantes: <strong>{{ pontos_restantes }}</strong></p>
+
+    {% if mensagem %}<p class="sucesso">{{ mensagem }}</p>{% endif %}
+    {% if erro %}<p class="erro">{{ erro }}</p>{% endif %}
+
+    {% if eh_crianca %}
+    <div class="recompensas-grid">
+        {% for chave, premio in recompensas.items() %}
+        <form method="post" class="card premio-card">
+            <h3>{{ premio['nome'] }}</h3>
+            <p><strong>{{ premio['pontos'] }} pontos</strong></p>
+            <input type="hidden" name="premio" value="{{ chave }}">
+            <button type="submit">Trocar pontos</button>
+        </form>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Somente crianças podem trocar pontos, mas você pode acompanhar ranking, medalhas e histórico.</p>
+    {% endif %}
+</section>
+
+<section class="card infantil">
+    <h3>🏅 Medalhas</h3>
+    {% if eh_admin %}
+        {% for nome, medalhas_da_crianca in medalhas_por_crianca.items() %}
+        <h4>{{ nome }}</h4>
+        <div class="medalhas-grid">
+            {% for medalha in medalhas_da_crianca %}
+            <article class="medalha">
+                <h4>{{ medalha['nome'] }}</h4>
+                <p>{{ medalha['descricao'] }}</p>
+            </article>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="medalhas-grid">
+            {% for medalha in medalhas %}
+            <article class="medalha">
+                <h4>{{ medalha['nome'] }}</h4>
+                <p>{{ medalha['descricao'] }}</p>
+            </article>
+            {% else %}
+            <p>Faça tarefas e cuide da saúde para ganhar medalhas.</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</section>
+
+<section class="card infantil">
+    <h3>🥇 Ranking das crianças</h3>
+    <ol class="ranking">
+        {% for crianca in ranking %}
+        <li>{{ crianca['nome'] }} — {{ crianca['pontuacao'] }} pts</li>
+        {% endfor %}
+    </ol>
+</section>
+
+<section class="card infantil">
+    <h3>📜 Histórico de trocas</h3>
+    <ul class="listagem compacta">
+        {% for troca in historico %}
+        <li>{{ troca['data_troca'] }} • {{ troca['usuario'] }} • {{ troca['recompensa'] }} (-{{ troca['pontos_gastos'] }} pts)</li>
+        {% else %}
+        <li>Nenhuma troca registrada ainda.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
